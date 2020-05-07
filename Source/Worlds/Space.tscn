@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Source/Worlds/World/Earth/Earth.gd" type="Script" id=1]
+[ext_resource path="res://Source/Worlds/Space.gd" type="Script" id=2]
+[ext_resource path="res://Source/Player/Player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Source/Worlds/World/Earth/EarthGenerator.gd" type="Script" id=4]
+
+[node name="Space" type="Spatial"]
+script = ExtResource( 2 )
+
+[node name="WorldEarth" type="Spatial" parent="."]
+script = ExtResource( 1 )
+WORLD_GENERATOR = ExtResource( 4 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 0.872818, -0.196262, 0.446845, 0.00163237, 0.916748, 0.399462, -0.488044, -0.347928, 0.800475, 5.33667, 14.3226, 17.9778 )
+light_color = Color( 0.988235, 1, 0.815686, 1 )
+light_specular = 0.2
+shadow_enabled = true
+shadow_bias = 0.0
+directional_shadow_split_1 = 0.07
+directional_shadow_split_2 = 0.14
+directional_shadow_split_3 = 0.28
+directional_shadow_blend_splits = true
+directional_shadow_normal_bias = 0.6
+directional_shadow_max_distance = 200.0
+
+[node name="Player" parent="." instance=ExtResource( 3 )]
