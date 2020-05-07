@@ -1,8 +1,9 @@
 # files
 icon.png.import
-.import/**
 project.godot
 # folders
+.import/**
+.vscode/**
 Resource/Blocks/**
 Resource/Chunks/**
 Resource/Models/**
