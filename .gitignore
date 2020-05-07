@@ -1,8 +1,7 @@
 # files
-    icon.png.import
-    .import/**
-    .gitignore
+icon.png.import
+.import/**
 # folders
-    Resource/Blocks/**
-    Resource/Chunks/**
-    Resource/Models/**
+Resource/Blocks/**
+Resource/Chunks/**
+Resource/Models/**
