@@ -1,6 +1,7 @@
 # files
 icon.png.import
 .import/**
+project.godot
 # folders
 Resource/Blocks/**
 Resource/Chunks/**
