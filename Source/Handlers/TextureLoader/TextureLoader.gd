@@ -1,5 +1,6 @@
-var texture_template = load("res://Source/Loaders/TextureLoader/ResourceTemplate.gd")
+var texture_template = load("res://Source/Handlers/TextureLoader/ResourceTemplate.gd")
 var non_texture
+var resource_path = "res://Game/Resources/Textures.tres"
 
 func _init():
 	non_texture = load("res://Resource/Blocks/Texture/missing_block.png").get_data()
@@ -7,8 +8,8 @@ func _init():
 
 func load_textures(block_names:Array):
 	var resource_dir = Directory.new()
-	if resource_dir.file_exists("res://Game/Resources/Textures.res"):
-		var resource = load("res://Game/Resources/Textures.res")
+	if resource_dir.file_exists(resource_path):
+		var resource = load(resource_path)
 		var valid = true
 		for key in block_names:
 			if not resource.images.has(key):
@@ -30,6 +31,6 @@ func create_new_save(block_names:Array):
 			images[name] = loaded_image
 		else: images[name] = non_texture
 	new_texture_save.images = images
-	if ResourceSaver.save("res://Game/Resources/Textures.res", new_texture_save) == FAILED:
+	if ResourceSaver.save(resource_path, new_texture_save) == FAILED:
 		print("Texture Resource saving failed...")
 	

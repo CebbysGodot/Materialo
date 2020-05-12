@@ -8,8 +8,8 @@ class Face:
 	func _init(pos:Vector3, dir:Vector3, name:String):
 		_vertices = []
 		_texture = name
-		_inverted = !(dir.x == -1 || dir.y == -1 || dir.z == -1)
-		var neg = !_inverted
+		_inverted = (dir.x == -1 || dir.y == -1 || dir.z == -1)
+		var neg = _inverted
 		
 		var ax1 = Vector3(dir.z, dir.x, dir.y)
 		var ax2 = Vector3(dir.y, dir.z, dir.x)
@@ -31,7 +31,7 @@ class Face:
 		return _vertices[id]
 
 	func is_inverted() -> bool:
-		return _inverted
+		return !_inverted
 	
 	func get_texture_name() -> String:
 		return _texture
@@ -70,7 +70,6 @@ class ChunkTexture:
 				image.blit_rect(src_image, src_rect, Vector2(src_pos.x, src_pos.y))
 			_texture.create_from_image(image, 2048)
 
-	
 	func print_texture_names():
 		print(_pos_names)
 		print(_image_dict)
