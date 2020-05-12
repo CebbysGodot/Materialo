@@ -1,6 +1,6 @@
 extends Spatial
 
-var texture_loader = load("res://Source/Loaders/TextureLoader/TextureLoader.gd").new()
+var texture_loader = load("res://Source/Handlers/TextureLoader/TextureLoader.gd").new()
 var block_list = BlockList.new()
 
 var _prev_player_chunk_pos:Vector3
