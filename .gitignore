@@ -3,11 +3,12 @@ icon.png.import
 project.godot
 temp
 # extensions
-*.png
-*.tres
-*.res
-*.tscn
-*.godot
+**.png
+**.tres
+**.res
+**.tscn
+**.godot
+**.import
 # folders
 .import/**
 .vscode/**
