@@ -1,0 +1,6 @@
+{
+    "name" : "stone_block",
+    "textures" : {
+        "0" : "resources/blocks/stone.png"
+    }
+}

@@ -1,0 +1,5 @@
+{
+    "mod_id" : "string identifying your mod. Example 'cebbys.main_mod'",
+    "block_list_path" : "path to your block list file",
+    "item_list" : "temp"
+}

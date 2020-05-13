@@ -1,0 +1,6 @@
+{
+    "mod_id" : "base_mod",
+    "block_folders" : [
+        "sources/blocks/block/"
+    ]
+}
