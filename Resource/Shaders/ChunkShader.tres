@@ -45,48 +45,39 @@ void vertex() {
 
 void fragment() {
 // Input:5
-	vec3 n_out5p0;
-	n_out5p0 = vec3(UV,0.0);
+	vec3 n_out5p0 = vec3(UV, 0.0);
 
 // ScalarUniform:10
-	float n_out10p0;
-	n_out10p0 = texture_size;
+	float n_out10p0 = texture_size;
 
 // VectorCompose:9
 	float n_in9p2 = 0.00000;
-	vec3 n_out9p0;
-	n_out9p0 = vec3( n_out10p0 , n_out10p0 , n_in9p2 );
+	vec3 n_out9p0 = vec3(n_out10p0, n_out10p0, n_in9p2);
 
 // ScalarUniform:16
-	float n_out16p0;
-	n_out16p0 = atlas_size;
+	float n_out16p0 = atlas_size;
 
 // VectorCompose:17
 	float n_in17p2 = 0.00000;
-	vec3 n_out17p0;
-	n_out17p0 = vec3( n_out16p0 , n_out16p0 , n_in17p2 );
+	vec3 n_out17p0 = vec3(n_out16p0, n_out16p0, n_in17p2);
 
 // VectorOp:18
-	vec3 n_out18p0;
-	n_out18p0 = n_out9p0 * n_out17p0;
+	vec3 n_out18p0 = n_out9p0 * n_out17p0;
 
 // VectorOp:7
-	vec3 n_out7p0;
-	n_out7p0 = n_out5p0 * n_out18p0;
+	vec3 n_out7p0 = n_out5p0 * n_out18p0;
 
 // VectorFunc:14
-	vec3 n_out14p0;
-	n_out14p0=floor(n_out7p0);
+	vec3 n_out14p0 = floor(n_out7p0);
 
 // VectorOp:15
-	vec3 n_out15p0;
-	n_out15p0 = n_out14p0 / n_out18p0;
+	vec3 n_out15p0 = n_out14p0 / n_out18p0;
 
 // TextureUniform:2
 	vec3 n_out2p0;
 	float n_out2p1;
 	{
-		vec4 n_tex_read = texture( chunk_texture , n_out15p0.xy );
+		vec4 n_tex_read = texture(chunk_texture, n_out15p0.xy);
 		n_out2p0 = n_tex_read.rgb;
 		n_out2p1 = n_tex_read.a;
 	}
