@@ -1,8 +1,0 @@
-{
-    "block_list" : [
-        "Block/Cobblestone.json",
-        "Block/Dirt.json",
-        "Block/Sand.json",
-        "Block/Stone.json"
-    ]
-}
