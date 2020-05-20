@@ -115,11 +115,11 @@ func get_chunk_mesh_2(chunk_map:ChunkMap, chunk_position:Vector3):
 							face_array.append(block_face)
 					
 
-func get_chunk_mesh(chunk_data:Array):
+func get_chunk_mesh(chunk_data:ChunkData):
 	var chunk_mesh:ArrayMesh = ArrayMesh.new()
 
-	var chunk_blocks = chunk_data[0]
-	var chunk_composition = chunk_data[1]
+	var chunk_blocks = chunk_data.BLOCK_LIST
+	var chunk_composition = chunk_data.COMPOSITION
 
 	var face_array = []
 	var block_ids = []
@@ -130,19 +130,13 @@ func get_chunk_mesh(chunk_data:Array):
 				var block_position = Vector3(x, y, z)
 				if chunk_composition.keys().has(block_position):
 					var block_id = chunk_blocks[chunk_composition[block_position]]
-					if block_id != "void":
-						if not block_ids.has(block_id): block_ids.append(block_id)
-						var vd = [
-							Vector3(-1, 0, 0), Vector3(1, 0, 0),
-							Vector3(0, -1, 0), Vector3(0, 1, 0),
-							Vector3(0, 0, -1), Vector3(0, 0, 1)
-						]
-						for v in vd:
-							var neighbour_pos = block_position + v
-							if !(chunk_composition.keys().has(neighbour_pos)) || chunk_composition[neighbour_pos] == 0:
-								var texture_id = "%s:0" % [block_id] # TODO Proper texture loading
-								var face = BaseBlockFace.new(block_position, v, texture_id)
-								face_array.append(face)
+					if not block_ids.has(block_id): block_ids.append(block_id)
+					for v in FACING_DIRECTIONS:
+						var neighbour_pos = block_position + v
+						if not chunk_composition.keys().has(neighbour_pos):
+							var texture_id = "%s:0" % [block_id] # TODO Proper texture loading
+							var face = BaseBlockFace.new(block_position, v, texture_id)
+							face_array.append(face)
 	
 	var block_array = []
 	for id in block_ids:

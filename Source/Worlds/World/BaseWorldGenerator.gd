@@ -13,39 +13,35 @@ func get_chunk(pos:Vector3):
 	noise.period = 6
 
 	var chunk = Chunk.new()
-	var l_chunk_data = _init_chunk_data(pos)
-	var l_chunk_mesh = _create_mesh_from_data(l_chunk_data)
+	var chunk_data = _init_chunk_data(pos)
+	var chunk_mesh = _create_mesh_from_data(chunk_data)
 
 	chunk.chunk_x = pos.x
 	chunk.chunk_y = pos.y
 	chunk.chunk_z = pos.z
-	chunk.chunk_data = l_chunk_data
-	chunk.chunk_mesh = l_chunk_mesh
+	chunk.chunk_data = chunk_data
+	chunk.chunk_mesh = chunk_mesh
 	return chunk
 
 
-func _init_chunk_data(pos:Vector3) -> Array:
-	var l_block_types = []
-	l_block_types.append("void")
-	l_block_types.append("base_mod:block:cobblestone_block")
-	l_block_types.append("base_mod:block:stone_block")
-	var l_pos = pos * MaterialoConstants.CHUNK_SIZE
-	var l_chunk_data = Dictionary()
+func _init_chunk_data(chunk_position:Vector3) -> ChunkData:
+	var chunk_data = ChunkData.new()
+	chunk_data.BLOCK_LIST.append("base_mod:block:cobblestone_block")
+	chunk_data.BLOCK_LIST.append("base_mod:block:stone_block")
+	var pos = chunk_position * MaterialoConstants.CHUNK_SIZE
 	# For each block in chunk
 	for y in range(MaterialoConstants.CHUNK_SIZE):
 		for x in range(MaterialoConstants.CHUNK_SIZE):
 			for z in range(MaterialoConstants.CHUNK_SIZE):
-				var l_block_pos = Vector3(x, y, z)
-				var l_value = noise.get_noise_3dv(l_block_pos + l_pos)
-				if l_value > 0: l_chunk_data[l_block_pos] = 0 # void
-				else: 
+				var block_pos = Vector3(x, y, z)
+				var value = noise.get_noise_3dv(block_pos + pos)
+				if value > 0:
 					if randf() > 0.5 :
-						l_chunk_data[l_block_pos] = 1 # cobblestone
+						chunk_data.COMPOSITION[block_pos] = 0 # cobblestone
 					else:
-						l_chunk_data[l_block_pos] = 2 # stone
-	var chunk_data = [l_block_types, l_chunk_data]
+						chunk_data.COMPOSITION[block_pos] = 1 # stone
 	return chunk_data
 # Test
-func _create_mesh_from_data(_data:Array) -> Mesh:
+func _create_mesh_from_data(_data:ChunkData) -> Mesh:
 	var chunk_mesh = CHUNK_MESH_GENERATOR.get_chunk_mesh(_data)
 	return chunk_mesh
