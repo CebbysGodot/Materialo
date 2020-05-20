@@ -1,12 +1,13 @@
-tool extends Spatial
+extends Spatial
 class_name BaseWorld
 
+export(Script) var WORLD_GENERATOR_SCRIPT
+
 var WORLD_CHUNKS:Dictionary
-var WORLD_INIT_SIZE:int = 2
-var WORLD_INIT_HEIGHT:int = 2
-var WORLD_VIEW_DISTANCE:int = 2
+var WORLD_INIT_SIZE:int = 1
+var WORLD_INIT_HEIGHT:int = 1
+var WORLD_VIEW_DISTANCE:int = 1
 var WORLD_NAME
-export(Script) var WORLD_GENERATOR
 var DISPLAY_CHUNKS:Spatial
 
 var GEN_THREAD:Thread
@@ -18,9 +19,6 @@ var GEN_GENERATING:bool
 var GEN_CHUNKMAP:Dictionary
 var GEN_POSITION:Vector3
 
-
-const GEN_VIEW_RANGE = 1
-
 func _ready():
 	# Variable init
 	GEN_THREAD = Thread.new()
@@ -31,15 +29,19 @@ func _ready():
 	
 	add_child(DISPLAY_CHUNKS)
 	
-	GEN_THREAD.start(self, "t_update_chunkmap")
+	if GEN_THREAD.start(self, "t_update_chunkmap") != OK: print("Thread failed to launch")
 	update_chunkmap(Vector3(0, 0, 0))
 
 func t_update_chunkmap(_void):
 	print("Thread started")
 	var _t_genque = []
 	var _t_displaychunks = Dictionary()
+	GEN_MUTEX.lock()
+	var world_generator = WORLD_GENERATOR_SCRIPT.new()
+	GEN_MUTEX.unlock()
 	
 	while true:
+		print("Chunk generation started")
 		GEN_SEMAPHORE.wait()
 		
 		GEN_MUTEX.lock()
@@ -48,45 +50,49 @@ func t_update_chunkmap(_void):
 		
 		if exit: break
 		
-		print("Generating chunkmap")
 		GEN_MUTEX.lock()
-		var v = GEN_VIEW_RANGE
-		var d = v * 2 + 1
+		var v = MaterialoConstants.WGEN_GENERATION_DISTANCE
+		var d = v + 1
 		var g_pos = GEN_POSITION
 		var t_chunkmap = GEN_CHUNKMAP.duplicate(true)
 		GEN_MUTEX.unlock()
 		
 		var names = Dictionary()
+		print("Chunk generation")
 		for y in range(d):
 			for x in range(d):
 				for z in range(d):
 					var pos = Vector3(
 						x - v + g_pos.x,
 						y - v + g_pos.y,
-						z - v + g_pos.z)
+						z - v + g_pos.z
+					)
 					names["%s_%s_%s" % [pos.x, pos.y, pos.z]] = pos
 					if not t_chunkmap.has(pos) || (t_chunkmap.has(pos) and t_chunkmap[pos] == null):
-						var chunk = ChunkOld.new(pos)
+						var chunk = world_generator.get_chunk(pos)
 						t_chunkmap[pos] = chunk
-		
-#		print("Instancing data")
-#		for child in DISPLAY_CHUNKS.get_children():
+		# print("Instancing data")
+		# for child in DISPLAY_CHUNKS.get_children():
 #			var c_name = child.get_name()
 #			print("Erasing [%s]" % [c_name])
 #			if not names.keys().has(c_name):
 #				DISPLAY_CHUNKS.call_deferred("remove_child", child)
 #			else: names.erase(c_name)
-
-		print("Adding children")
+		
+		print("Display mesh init")
 		for n in names.keys():
 			var n_chunk = t_chunkmap[names[n]]
-			n_chunk.set_name(n)
-			DISPLAY_CHUNKS.call_deferred("add_child", n_chunk)
+			var mesh_instance = MeshInstance.new()
+			mesh_instance.mesh = n_chunk.chunk_mesh
+			var trans = Vector3(n_chunk.chunk_x, n_chunk.chunk_y, n_chunk.chunk_z) * MaterialoConstants.CHUNK_SIZE
+			mesh_instance.translate(trans)
+			mesh_instance.set_name(n)
+			DISPLAY_CHUNKS.call_deferred("add_child", mesh_instance)
 
-#		GEN_MUTEX.lock()
-#		GEN_CHUNKMAP = t_chunkmap.duplicate(true)
-#		GEN_MUTEX.unlock()
-		print("Generation finished")
+		GEN_MUTEX.lock()
+		GEN_CHUNKMAP = t_chunkmap.duplicate(true)
+		GEN_MUTEX.unlock()
+		print("Chunk generation finished")
 
 func update_chunkmap(pos:Vector3):
 	GEN_MUTEX.lock()

@@ -29,6 +29,7 @@ func load_block_list( materialo_entities:MaterialoEntityListTemplate, structure:
 					if verify_block_json( json ):
 						var block = create_block( json )
 						var block_id = structure.get_block_id( block.block_name )
+						block.block_id = block_id
 						materialo_entities.BLOCK_LIST[ block_id ] = block
 					else:
 						print("[%s] json file is invalid" % [json_path])

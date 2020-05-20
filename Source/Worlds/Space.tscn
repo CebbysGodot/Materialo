@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
+[ext_resource path="res://Source/Worlds/World/Earth/Earth.gd" type="Script" id=1]
 [ext_resource path="res://Source/Worlds/Space.gd" type="Script" id=2]
 [ext_resource path="res://Source/Player/Player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Source/Worlds/World/BaseWorldGenerator.gd" type="Script" id=4]
 
 [node name="Space" type="Spatial"]
 script = ExtResource( 2 )
@@ -20,3 +22,7 @@ directional_shadow_normal_bias = 0.6
 directional_shadow_max_distance = 200.0
 
 [node name="Player" parent="." instance=ExtResource( 3 )]
+
+[node name="WorldEarth" type="Spatial" parent="."]
+script = ExtResource( 1 )
+WORLD_GENERATOR_SCRIPT = ExtResource( 4 )
