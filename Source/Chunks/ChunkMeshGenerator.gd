@@ -97,51 +97,34 @@ func _init():
 		Vector3(0, 0, -1), Vector3(0, 0, 1)
 	]
 
-func get_chunk_mesh_2(chunk_map:ChunkMap, chunk_position:Vector3):
-
-	var face_array:Array = []
-
-	for y in range(MaterialoConstants.CHUNK_SIZE):
-		for x in range(MaterialoConstants.CHUNK_SIZE):
-			for z in range(MaterialoConstants.CHUNK_SIZE):
-				var test_position = Vector3(x, y, z)
-				var block:BaseBlock = chunk_map.get_block(chunk_position, test_position)
-				if block != null:
-					for direction in FACING_DIRECTIONS:
-						var neighbour_block = chunk_map.get_block(chunk_position, test_position + direction)
-						if neighbour_block == null:
-							var texture_id = "%s:0" % [block.block_id] # TODO proper texture loading
-							var block_face = BaseBlockFace.new(test_position, direction, texture_id)
-							face_array.append(block_face)
-					
-
-func get_chunk_mesh(chunk_data:ChunkData):
+func get_chunk_mesh(chunk_map:ChunkMap, chunk_position:Vector3):
 	var chunk_mesh:ArrayMesh = ArrayMesh.new()
-
-	var chunk_blocks = chunk_data.BLOCK_LIST
-	var chunk_composition = chunk_data.COMPOSITION
-
-	var face_array = []
-	var block_ids = []
+	var face_array:Array = []
+	var block_ids:Array = []
 
 	for y in range(MaterialoConstants.CHUNK_SIZE):
 		for x in range(MaterialoConstants.CHUNK_SIZE):
 			for z in range(MaterialoConstants.CHUNK_SIZE):
-				var block_position = Vector3(x, y, z)
-				if chunk_composition.keys().has(block_position):
-					var block_id = chunk_blocks[chunk_composition[block_position]]
+
+				var test_position = Vector3(x, y, z)
+				var block_id = chunk_map.get_block_id(chunk_position, test_position)
+				if block_id != null:
 					if not block_ids.has(block_id): block_ids.append(block_id)
-					for v in FACING_DIRECTIONS:
-						var neighbour_pos = block_position + v
-						if not chunk_composition.keys().has(neighbour_pos):
-							var texture_id = "%s:0" % [block_id] # TODO Proper texture loading
-							var face = BaseBlockFace.new(block_position, v, texture_id)
-							face_array.append(face)
+					var block = materialo_entities.BLOCK_LIST[block_id]
+					if block != null:
+						for direction in FACING_DIRECTIONS:
+							var neighbour_pos = test_position + direction
+							var neighbour_block_id = chunk_map.get_block_id(chunk_position, neighbour_pos)
+							if neighbour_block_id == null:
+								var texture_id = "%s:0" % [block.block_id] # TODO proper texture loading
+								var block_face = BaseBlockFace.new(test_position, direction, texture_id)
+								face_array.append(block_face)
 	
+	print( "mid[ %s ]" % [ chunk_mesh ] )
+
 	var block_array = []
 	for id in block_ids:
-		if id != "void":
-			block_array.append(materialo_entities.BLOCK_LIST[id])
+		block_array.append(materialo_entities.BLOCK_LIST[id])
 	var chunk_texture = ChunkMeshTexture.new(block_array)
 
 	surface_tool.begin(Mesh.PRIMITIVE_TRIANGLES)
@@ -158,6 +141,8 @@ func get_chunk_mesh(chunk_data:ChunkData):
 	chunk_material.set_shader_param("texture_size", MaterialoConstants.BLOCK_TEXTURE_SIZE)
 	if chunk_mesh.get_surface_count() > 0:
 		chunk_mesh.surface_set_material(0, chunk_material)
+
+	print( "end[ %s ]" % [ chunk_mesh ] )
 	
 	return chunk_mesh
 
